@@ -6,10 +6,10 @@
 
     <div class="d-flex justify-content-center align-item-center" style="height: 100%">
       <ul class="menu">
-        <li><a @click="navTo(1)">ABOUT</a></li>
-        <li><a @click="navTo(2)">STORY OF US</a></li>
-        <li><a @click="navTo(3)">SHOP</a></li>
-        <li><a @click="navTo(4)">CONTACT</a></li>
+        <li><a :class="{active: section == 1}" @click="navTo(1)">ABOUT</a></li>
+        <li><a id="story-a" :class="{active: section == 2}" @click="navTo(2)">STORY OF US</a></li>
+        <li><a :class="{active: section == 3}" @click="navTo(3)">SHOP</a></li>
+        <li><a :class="{active: section == 4}" @click="navTo(4)">CONTACT</a></li>
       </ul>
     </div>
   </div>
@@ -70,7 +70,7 @@ export default {
 }
 
 .story-home #home .cls-1 {
-  fill: #F7E7AD;
+  fill: var(--story-color, #F7E7AD);
   fill-opacity: 1;
 }
 
@@ -96,6 +96,7 @@ export default {
   height: 60px;
   width: 100%;
   transition: all 1s;
+  background: none;
 }
 
 .navhome.about-home {
@@ -131,11 +132,43 @@ export default {
 
 .menu li a {
   cursor: pointer;
+  position: relative;
   text-decoration: none;
 }
 
+a:before {
+  height: 2px;
+  content: "";
+  position: absolute;
+  background-color: #436FB5;
+  width: 100%;
+  transform: scaleX(0);
+  bottom: -5px;
+  /* left: 50%; */
+  border-radius: 15px;
+  transition: all .7s ease;
+}
+
+.story-home a:before {
+  background-color: var(--story-color, #F7E7AD);
+}
+
+.shop-home a:before {
+  background-color: #3994D1;
+}
+
+.contact-home a:before {
+  background-color: #CAECFC;
+}
+
+a:hover:before,
+a.active:before {
+  width: 100%;
+  transform: scaleX(1);
+}
+
 .story-home .menu li {
-  color: #F7E7AD;
+  color: var(--story-color, #F7E7AD);
 }
 
 .shop-home .menu li {

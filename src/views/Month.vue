@@ -1,7 +1,8 @@
 <template>
   <div class="story-container" ref="stcon" style="background: #F8B978;">
     <!-- <h1 v-if="loaded < 12">Loading</h1> -->
-    <div @click="next" class="click-aria"></div>
+    <img @click="next" ref="next-b" class="arrow-up" :src="require('@/assets/img/Story/arrow-up-w.png')" alt="">
+    <div ref="clickArea" @click="next" class="click-aria"></div>
     <div class="month-elements first init" ref="jan"></div>
     <div class="month-elements second" ref="jan2"></div>
     <div class="month-elements first" ref="feb"></div>
@@ -26,6 +27,13 @@
     <div class="month-elements second" ref="nov2"></div>
     <div class="month-elements first" ref="dec"></div>
     <div class="month-elements second" ref="dec2"></div>
+    <div class="month-elements final" ref='final'>
+      <img :src="require('@/assets/img/Story/nextyear.png')" alt="">
+      <div @click="returnToJan" class="start-button" style="position: relative;">
+        <img class="border-star" :src="require('@/assets/img/Story/textborder-star.png')" alt="">
+        <img class="arrow-down" :src="require('@/assets/img/Story/arrowdown.png')" alt="">
+      </div>
+    </div>
     <div :class="['three-dot', 'left', monthList[monthIndex]]">
       <div class="dot"></div>
       <div class="dot"></div>
@@ -49,7 +57,8 @@ export default {
       clickable: false,
       monthList: [
         'jan', 'feb', 'mar', 'apr', 'may', 'jun',
-        'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
+        'jul', 'aug', 'sep', 'oct', 'nov', 'dec',
+        'final'
       ],
       loaded: 0,
       monthIndex: 0,
@@ -100,7 +109,13 @@ export default {
       } else {
         idstop = this.monthList[this.monthIndex - 1] + '2'
         id = this.monthList[this.monthIndex]
-        this.setAnimation(id)
+        if (id !== 'final') {
+          this.setAnimation(id)
+        } else {
+          this.$refs.clickArea.style.display = 'none'
+          this.$refs['next-b'].style.transition = 'all 0.5s ease;'
+          this.$refs['next-b'].style.transform = 'scale(0)'
+        }
         this.elementControl[this.monthList[this.monthIndex]] = true
         const sec = this.$refs[this.monthList[this.monthIndex - 1] + '2']
         sec.classList.remove('appear')
@@ -115,7 +130,7 @@ export default {
       // if (this.monthIndex === 2 && this.contentIndex === 0) {
       //   this.returnToJan()
       // }
-      this.anim[id].play()
+      if (id !== 'final') this.anim[id].play()
       await this.wait(1200)
       this.anim[idstop].destroy()
       this.clickable = true
@@ -154,35 +169,12 @@ export default {
         setTimeout(resolve, ms)
       })
     },
-    returnToJan () {
-      this.$refs[this.monthList[this.monthIndex]].classList.remove('appear')
-      this.returning = setInterval(async () => {
-        this.monthIndex -= 1
-        let month = this.monthList[this.monthIndex] + '2'
-        const sec = this.$refs[month]
-        this.setAnimation(month)
-        sec.classList.remove('leave')
-        sec.style.transition = 'all .5s ease-in-out'
-        this.$refs.stcon.style.background = this.color[this.monthIndex]
-        await this.wait(400)
-        this.anim[month].destroy()
-        sec.style.transition = ''
-
-        month = this.monthList[this.monthIndex]
-        const first = this.$refs[month]
-        this.setAnimation(month)
-        if (this.monthList[this.monthIndex] === 'jan') {
-          first.classList.remove('leave')
-          first.classList.add('appear')
-          clearInterval(this.returning)
-          return
-        }
-        first.classList.remove('leave')
-        first.style.transition = 'all .5s ease-in-out'
-        await this.wait(500)
-        this.anim[month].destroy()
-        first.style.transition = ''
-      }, 3000)
+    async returnToJan () {
+      this.$refs[this.monthList[this.monthIndex]].style.transition = 'all 0.5s ease;'
+      this.$refs[this.monthList[this.monthIndex]].style.transform = 'scale(0)'
+      setTimeout(() => {
+        this.$emit('return')
+      }, 1000)
     }
   }
   // watch: {
@@ -198,6 +190,29 @@ export default {
 </script>
 
 <style scoped>
+
+.month-elements.final {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.arrow-up {
+  position: absolute;
+  bottom: 30px;
+  max-width: 80px;
+  animation: 1s ease-in-out 1s appearing-arrow backwards;
+  cursor: pointer;
+  z-index: 99;
+}
+
+@keyframes appearing-arrow {
+  from {
+    transform: translateY(20%);
+    opacity: 0;
+  }
+}
 
 .click-aria {
   width: 70vh;
@@ -285,6 +300,57 @@ export default {
   overflow: hidden;
   -webkit-transition: background 2s ease;
   transition: background 2s ease;
+}
+
+.start-button {
+  height: 150px;
+  width: 150px;
+}
+.start-button .border-star {
+  position: absolute;
+  width: 100%;
+}
+
+.start-button {
+  position: relative;
+  margin-top: 30px;
+  z-index: 99;
+  cursor: pointer;
+}
+
+.start-button:hover img.border-star {
+  animation: rotate 10s infinite linear both;
+}
+
+.start-button .arrow-down {
+  position: relative;
+  max-width: 50%;
+  left: 25%;
+  top: 30%;
+  transform: scaleY(-1);
+  animation: arrow 1s infinite ease-out;
+}
+
+@keyframes arrow {
+  0% {
+    transform: translateY(0);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(40%)
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform:  rotateZ(0deg);
+  }
+  100% {
+    transform:  rotateZ(360deg);
+  }
 }
 
 </style>

@@ -117,14 +117,15 @@ export default {
       const vh = window.innerHeight * 0.01
       document.documentElement.style.setProperty('--vh', `${vh}px`)
     })
+    window.addEventListener('resize', () => { this.handleResize() })
+  },
+  destroyed () {
+    window.addEventListener('resize', () => { this.handleResize() })
   }
 }
 </script>
 
 <style scoped>
-.home {
-  -webkit-overflow-scrolling: touch;
-}
 body {
   background-color: #cbecfd;
 }
@@ -133,6 +134,14 @@ body {
 <style>
 body {
   margin: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.home {
+  height: calc(var(--vh, 1vh) * 100);
+  width: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
 .loading {

@@ -11,6 +11,9 @@
         </div>
       </div>
       <div class="modal-content d-flex justify-content-center form_container">
+        <div @click="closeModal" id="orangeBox">
+          <span id="x">&#10005;</span>
+        </div>
         <h5 class="modal-title" id="title">Sign Up</h5>
         <form>
           <div class="input-group mb-3">
@@ -44,7 +47,7 @@
             />
           </div>
           <div class="d-flex justify-content-center mt-3 login_container">
-            <button type="button" name="button" class="btn login_btn">Login</button>
+            <button type="button" name="button" class="login_btn">Login</button>
           </div>
 
           <div class="form-group">
@@ -53,17 +56,16 @@
               <label class="custom-control-label" for="customControlInline">Remember me</label>
             </div>
           </div>
+          <div class="mt-4">
+            <div class="d-flex justify-content-center links">
+              Don't have an account?
+              <a href="#" class="ml-2">Sign Up</a>
+            </div>
+            <div class="d-flex justify-content-center links">
+              <a href="#">Forgot your password?</a>
+            </div>
+          </div>
         </form>
-      </div>
-
-      <div class="mt-4">
-        <div class="d-flex justify-content-center links">
-          Don't have an account?
-          <a href="#" class="ml-2">Sign Up</a>
-        </div>
-        <div class="d-flex justify-content-center links">
-          <a href="#">Forgot your password?</a>
-        </div>
       </div>
     </div>
   </div>
@@ -71,7 +73,14 @@
 
 <script>
 import '@/assets/Fonts/font.css'
-export default {}
+export default {
+  methods: {
+    closeModal () {
+      // eslint-disable-next-line no-undef
+      $('#login-modal').modal('hide')
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -100,7 +109,7 @@ html {
 }
 
 .user_card {
-  height: 450px;
+  height: 500px;
   width: 400px;
   background: rgba(255, 255, 255, 0.3);
   position: absolute;
@@ -147,9 +156,26 @@ html {
 }
 .login_btn {
   width: 100%;
-  background: #3994D1 !important;
-  color: white !important;
+  height: 50px;
+  background: #4896CC;
+  color: white;
+  font-size: 20px;
+  font-family: myriad-pro, sans-serif;
+  font-weight: 700;
+  padding: 5px 25px;
+  border-radius: 15px;
+  margin: 0;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border: 1px solid #4896CC;
+  transition: all 0.5s;
 }
+
+.login_btn:hover {
+  background: none;
+  border: 1px solid white;
+}
+
 .login_btn:focus {
   box-shadow: none !important;
   outline: 0px !important;
@@ -166,5 +192,29 @@ html {
 }
 .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
   background-color: #3994D1 !important;
+}
+
+#orangeBox {
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: 0;
+  top: -20%;
+  /* background: #f90; */
+  color: #3994D1;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all .5s ease;
+}
+
+#orangeBox:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 </style>

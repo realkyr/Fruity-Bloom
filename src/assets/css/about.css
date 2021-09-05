@@ -1,13 +1,9 @@
 @import "../Fonts/font.css";
 
-html {
-  scroll-behavior: initial;
-  overflow-y: scroll;
-}
-
 .about {
   width: 100vw;
   overflow-x: hidden;
+  overflow-y: scroll !important;
   background-position: center top;
   background-image: url('../img/About/bg.jpg');
   -webkit-background-size: cover;
@@ -26,18 +22,19 @@ html {
 
 .about-section {
   height: 1500px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .propose-section {
   color: #FDE458;
-  margin-top: 10%;
+  margin-top: 5%;
 }
 
 .learnto-section {
   color: white;
-  margin-top: 5%
+  margin-top: 10%
 }
 
 .fruit-section {
@@ -73,7 +70,7 @@ html {
 }
 
 .learnto-section {
-  margin-top: 10%;
+  margin-top: 18%;
 }
 
 .fruit-section .topic {
@@ -89,7 +86,7 @@ html {
 #beoriginal {
   position: relative;
   width: 100%;
-  transform: translate(0, -30%)
+  transform: translate(0, -50%) scale(1.1)
   
 }
 
@@ -126,11 +123,11 @@ html {
   .about {
     background-position: center top;
     background-size: 1700px, 100%;
-    font-size: 0.8em;
+    font-size: 1.3em;
   }
 
   .aboutus {
-    width: 50vw;
+    width: 60vw;
   }
 
   .about-section {
@@ -138,12 +135,16 @@ html {
   }
 
   .fruit-article {
-    width: 50vw;
+    width: 45vw;
   }
 }
 
 
 @media (max-width: 1024px) {
+  .about {
+    font-size: 0.9em;
+  }
+
   .aboutus {
     width: 60vw;
   }

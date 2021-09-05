@@ -2,9 +2,9 @@
   <div class="landing-page-container" >
     <Navbar @navto="nextSection" :section="section" />
     <Landing  @nextpage="nextSection" />
-    <About @nextpage="nextSection" />
-    <Story ref="homeStory" @nextpage="nextSection" />
-    <Shop @nextpage="nextSection" />
+    <About :section="section" @nextpage="nextSection" />
+    <Story :section="section" ref="homeStory" @nextpage="nextSection" />
+    <Shop :section="section" @nextpage="nextSection" />
     <Contact />
     <div :class="['section-indicator', sectionName[section]]">
       <div class="circle"></div>
@@ -23,6 +23,7 @@ import About from '@/components/Home/Section/About'
 import Story from '@/components/Home/Section/Story'
 import Shop from '@/components/Home/Section/Shop'
 import Contact from '@/components/Home/Section/Contact'
+import smoothscroll from 'smoothscroll-polyfill'
 
 // left: 37, up: 38, right: 39, down: 40,
 // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
@@ -67,37 +68,38 @@ export default {
     }
   },
   mounted () {
+    // kick off the polyfill!
+    smoothscroll.polyfill()
+    window.__forceSmoothScrollPolyfill__ = true
     const vh = window.innerHeight * 0.01
     document.documentElement.style.setProperty('--vh', `${vh}px`)
-    window.addEventListener('resize', () => {
-      // We execute the same script as before
-      const vh = window.innerHeight * 0.01
-      document.documentElement.style.setProperty('--vh', `${vh}px`)
-      this.nextSection(this.section, true)
-    })
+    window.addEventListener('resize', this.handleRisize)
     this.disableScroll()
   },
   destroyed () {
+    console.log('destroyed')
     this.enableScroll()
-    window.removeEventListener('resize', () => {
+    window.removeEventListener('resize', this.handleRisize)
+  },
+  methods: {
+    handleRisize () {
       // We execute the same script as before
       const vh = window.innerHeight * 0.01
       document.documentElement.style.setProperty('--vh', `${vh}px`)
-      this.nextSection(this.section, true)
-    })
-  },
-  methods: {
-    nextSection (e, resize = false) {
+      setTimeout(() => { this.navTo(this.section) }, 1000)
+    },
+    nextSection (e) {
       if (!this.scrollable) return
-      if (!resize) {
-        document.querySelector('#home-navbar').style.background = ''
-        if (e === 2) {
-          document.querySelector('#home-navbar').style.background = this.$refs.homeStory.navbg[this.$refs.homeStory.month]
-        }
+      document.querySelector('#home-navbar').style.background = ''
+      if (e === 2) {
+        document.querySelector('#home-navbar').style.background = this.$refs.homeStory.navbg[this.$refs.homeStory.month]
       }
       console.log(e)
       this.section = e
 
+      this.navTo(this.section)
+    },
+    navTo (e) {
       if (e === 1) {
         const section = document.querySelector('#about-section')
         section.scrollIntoView({ behavior: 'smooth' })
@@ -106,6 +108,7 @@ export default {
         section.scrollIntoView({ behavior: 'smooth' })
       } else if (e === 3) {
         const section = document.querySelector('#shop-section')
+        console.log(section)
         section.scrollIntoView({ behavior: 'smooth' })
       } else if (e === 4) {
         const section = document.querySelector('#contact-section')
@@ -158,17 +161,42 @@ export default {
 }
 </script>
 
+<style>
+.seemore {
+  text-decoration: none !important;
+  transition: all 0.7s ease;
+}
+
+.seemore:hover {
+  transform: scale(0.8);
+}
+</style>
+
 <style scoped>
 .landing-page-container {
-  overflow: hidden;
-  height: calc(var(--vh, 1vh) * 100);
   -webkit-overflow-scrolling: touch;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: -17px; /* Increase/Decrease this value for cross-browser compatibility */
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+@media screen and (max-width: 992px) {
+  .landing-page-container {
+    /* scroll-behavior: smooth; */
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 .section-indicator {
   position: fixed;
   right: 20px;
   bottom: 10px;
   z-index: 99;
+  transition: all .5s ease;
 }
 .section-indicator .circle {
   width: 15px;
@@ -178,6 +206,10 @@ export default {
   background: none;
   border: white solid 2px;
   transition: all .5s ease;
+}
+
+.section-indicator.contact-sec-in {
+  bottom: 50px;
 }
 
 .section-indicator.home-sec-in .circle {

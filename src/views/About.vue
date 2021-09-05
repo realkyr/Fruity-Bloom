@@ -6,7 +6,11 @@
           <HomeIcon />
         </router-link>
       </div>
-      <div :class="sectionStyle('propose')">
+      <div :class="{
+        ['propose-section']: true,
+        'appear': true,
+        container: true
+      }">
         <h1 class="pro-items topic">About</h1>
         <h6 class="pro-items subtopic">{ Source }</h6>
         <p class="pro-items aboutus">
@@ -23,7 +27,12 @@
       </div>
     </div>
   <div ref="learnto" class="about-section">
-    <div :class="sectionStyle('learnto')">
+    <div :class="{
+        ['learnto-section']: true,
+        appear: this.visibility.learnto === true,
+        disappear: this.visibility.learnto === false,
+        container: true
+      }">
       <h1 class="learnto-items topic aboutus">“ Learn to<br/>
         <span style="margin-left: 35px">Love my body ”</span>
       </h1>
@@ -37,7 +46,12 @@ concept 12 month of body shaming เพราะเรื่องของ body
     <img id="beoriginal" :src="require('@/assets/img/About/beoriginal.png')" />
   </div>
   <div ref="fruit" class="about-section">
-    <div :class="sectionStyle('fruit')">
+    <div :class="{
+        ['fruit-section']: true,
+        appear: this.visibility.fruit === true,
+        disappear: this.visibility.fruit === false,
+        container: true
+      }">
       <h1 class="fruit-items topic">
         “ Fruity Bloom ”
       </h1>
@@ -50,18 +64,13 @@ concept 12 month of body shaming เพราะเรื่องของ body
 Fruity คือ ลักษณะของผลไม้ที่มีจุดเด่นที่แตกต่างกัน ไม่ว่าจะกลิ่น หรือรสชาติของ
 ผลไม้ เปรียบกับทั้ง 12 character ที่มีทั้งจุดเด่น ลักษณะนิสัยที่แตกต่างของแต่ละคน
 Bloom คือความเบ่งบาน เปรียบเสมือนกับความงามของผู้หญิงที่กำลังเบ่งบาน
-อย่างสวยงาม ซึ่งก็หมายถึง ผู้หญิงเหล่านี้เปรียบกับผลไม้ของทั้ง 12 เดือน  ขนาดผลไม้ที่มีรูปร่าง
+อย่างสวยงาม <br> ซึ่งก็หมายถึง ผู้หญิงเหล่านี้เปรียบกับผลไม้ของทั้ง 12 เดือน  ขนาดผลไม้ที่มีรูปร่าง
 ที่แปลก ก็ยังได้รับความนิยมและจัดให้เป็นผลไม้ของแต่ละหน้า ก็เหมือนกับคน
 สุดท้ายแล้วไม่ว่าเราจะมีรูปร่างหน้าตาแบบไหน เราก็มีดี มีคุณค่าที่พร้อมจะเบ่งบาน
 ในแบบของเราไม่ว่าจะช่วงเวลาไหนก็ตาม
       </p>
     </div>
     <div class="container-fluid nav footer">
-      <div class="contact">
-        Contact<br>
-        Email : ppkhemmud@gmail.com<br>
-        Tel : 0989453593
-      </div>
       <router-link id="homeNav" :to="{name: 'Home'}" tag="a">
         <HomeIcon />
       </router-link>
@@ -70,15 +79,18 @@ Bloom คือความเบ่งบาน เปรียบเสมื�
   </div>
 </template>
 
+<style scoped src="@/assets/css/about.css"></style>
+<style scoped src="@/assets/css/about-animation.css"></style>
+
 <script>
 import HomeIcon from '../components/icons/Home'
-import '@/assets/css/about.css'
-import '@/assets/css/about-animation.css'
 export default {
   components: {
     HomeIcon
   },
   mounted () {
+    this.$store.state.start = true
+    this.$store.state.isLoadFinish = true
     window.addEventListener('scroll', this.checkVisibility)
   },
   data () {
@@ -110,6 +122,7 @@ export default {
       } else {
         this.visibility.fruit = this.visibility.fruit === null ? null : false
       }
+      return true
     },
     sectionStyle (name) {
       const sectionName = `${name}-section`

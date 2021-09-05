@@ -3,7 +3,7 @@
     <Cart ref="cart" />
     <div class="container-fluid">
       <div class="nav row">
-        <img :src="require('@/assets/img/Shop/BG-01.png')" />
+        <img class="image-bg" :src="require('@/assets/img/Shop/BG-01.png')" />
         <div class="col-6">
           <router-link id="homeNavShop" :to="{name: 'Home'}" tag="a">
             <HomeIcon/>
@@ -22,13 +22,13 @@
       </div>
 
       <Login />
+      <Calendar />
 
       <div class="row" id="first">
         <div class="col-12 col-md-6">
           <div @click="calendarInside" class="calendar-container d-flex justify-content-center">
             <div class="white">View Inside</div>
-            <img src="https://drive.google.com/uc?id=1KxM5nr69898-o4tQbpB_OIC9XF-_ARxN" width="100%">
-            <Calendar />
+            <img :src="require('@/assets/img/Shop/calendar.png')" width="100%">
           </div>
         </div>
 
@@ -171,6 +171,12 @@ export default {
     },
     ...mapMutations(['addToCart'])
   },
+  mounted () {
+    this.$store.state.start = true
+    this.$store.state.isLoadFinish = true
+    // eslint-disable-next-line no-undef
+    $('#login-modal').modal()
+  },
   computed: {
     ...mapGetters(['cartAmount'])
   }
@@ -183,6 +189,7 @@ export default {
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  transform: translateY(-100px);
 }
 
 .calendar-container .white{
@@ -208,6 +215,10 @@ export default {
 
 .cart:hover .cart-background {
   fill: #FFFFFF;
+}
+
+#homeNavShop .cls-1 {
+  fill: #6CAADD;
 }
 
 #homeNavShop:hover .cls-1 {
@@ -295,12 +306,7 @@ p {
   font-size: 1em;
 }
 
-/*
-.modal-open .nav img {
-  padding-right: 17px;
-} */
-
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 992px) {
   .modal-open .nav img {
     padding-right: 0;
   }
@@ -309,7 +315,7 @@ p {
 .nav img {
   position: absolute;
   z-index: 0;
-  width: 100%;
+  width: 100vw;
   left: 0;
   top: 0;
 }
@@ -359,7 +365,7 @@ p {
 }
 
 .shopnow {
-  margin-top: 10%;
+  margin-top: 18%;
   margin-bottom: 20px;
   z-index: 1;
 }

@@ -15,10 +15,12 @@
   }
   #about-section .st0 { stroke: #F7ED72; }
   #story-section .st0 { stroke: white; }
+  #shop-section .st0 { stroke: #3994D1; }
 
   .st1 { fill:#74C5E8; }
   #about-section .st1 { fill:#F7ED72; }
   #story-section .st1 { fill: white; }
+  #shop-section .st1 { fill: #3994D1; }
 </style>
 
 <script>

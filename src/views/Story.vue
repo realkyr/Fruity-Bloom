@@ -18,7 +18,7 @@
       </div>
     </transition>
 
-    <Month v-if="start" />
+    <Month @return="returnToStart" v-if="start" />
 
     <router-link id="homeNavStory" :to="{name: 'Home'}" tag="a">
       <HomeIcon/>
@@ -28,6 +28,7 @@
 
 <style>
 #homeNavStory {
+  z-index: 99;
   position: absolute;
   left: 20px;
   top: 20px;
@@ -62,6 +63,8 @@ export default {
     }
   },
   mounted () {
+    this.$store.state.start = true
+    this.$store.state.isLoadFinish = true
     this.$nextTick(() => {
       setTimeout(() => {
         this.finish = true
@@ -73,6 +76,14 @@ export default {
       document.querySelector('#story-big-con').style.background = '#F8B978'
       document.querySelector('#start-page').classList.add('starting')
       setTimeout(() => { this.start = true }, 5000)
+    },
+    returnToStart () {
+      document.querySelector('#story-big-con').style.transition = 'all .5s ease'
+      document.querySelector('#story-big-con').style.background = '#AEE0F4'
+      setTimeout(() => {
+        document.querySelector('#story-big-con').style.transition = ''
+        this.start = false
+      }, 500)
     }
   }
 }
@@ -112,6 +123,7 @@ html, body {
   max-width: 50%;
   left: 25%;
   top: 25%;
+  animation: arrow 1s infinite ease-out;
 }
 
 @media screen and (max-width: 1024px) {
@@ -164,6 +176,19 @@ html, body {
   }
   100% {
     transform:  scale(1000%);
+  }
+}
+
+@keyframes arrow {
+  0% {
+    opacity: 0;
+    transform: translateY(40%)
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0)
   }
 }
 
