@@ -47,7 +47,7 @@
           <img class="cloud" id="c-1" :src="require('@/assets/cloud.png')" >
           <img class="cloud" id="c-2" :src="require('@/assets/cloud.png')" >
           <img class="cloud" id="c-3" :src="require('@/assets/cloud.png')" >
-          <h1 style="z-index: 99; color: #436FB5; font-size: 5vh; font-family: 'YoungSerif'">Hello! welcome to our gang.</h1>
+          <h1 style="z-index: 99; text-align: center; color: #436FB5; font-size: 5vh; font-family: 'YoungSerif'">Hello! welcome to our gang.</h1>
           <div @click="enterHome" @mouseenter="changeStrawberry('in')" @mouseleave="changeStrawberry('out')" class="start-button">
             <img class="strawberry" ref="strawberry" :src="require('@/assets/strawberry.png')" >
             <img class="border-text" :src="require('@/assets/textborder.png')" >

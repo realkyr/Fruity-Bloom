@@ -65,6 +65,7 @@ export default {
 
 #about-section {
   height: calc(var(--vh, 1vh) * 100);
+  width: 100vw;
   position: relative;
   background-position: center top;
   -webkit-background-size: cover;
@@ -103,6 +104,10 @@ export default {
   border: #F7ED72 solid 2px;
   border-radius: 15px;
   font-family: 'YoungSerif';
+}
+
+#about-section .container {
+  padding: 0 15px 0 15px;
 }
 
 .appear {

@@ -46,10 +46,6 @@ export default {
   .navhome {
     font-size: 13px;
   }
-
-  .menu li a:nth-child(2) {
-    white-space: nowrap;
-  }
 }
 #home {
   cursor: pointer;
@@ -134,6 +130,19 @@ export default {
   cursor: pointer;
   position: relative;
   text-decoration: none;
+}
+.menu li a:nth-child(1) {
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 800px) {
+  .menu {
+    margin: 0 0 0 50px
+  }
+  .menu li {
+    margin: 0 6px 0 6px;
+    font-size: 12px;
+  }
 }
 
 a:before {

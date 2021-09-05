@@ -7,7 +7,7 @@
     </div>
     <div class="container text-center">
       <ul class="menu">
-        <li><a :class="{active: product == 'all'}" @click="product = 'all'">All</a></li>
+        <li v-if="!isMobile"><a :class="{active: product == 'all'}" @click="product = 'all'">All</a></li>
         <li><a :class="{active: product == 'Calendar'}" @click="product = 'Calendar'">Calendar</a></li>
         <li><a :class="{active: product == 'Notebook'}" @click="product = 'Notebook'">Notebook</a></li>
         <li><a :class="{active: product == 'Notepad'}" @click="product = 'Notepad'">Notepad</a></li>
@@ -93,6 +93,11 @@ export default {
     nextSection () {
       console.log('next!')
       this.$emit('nextpage', 4)
+    }
+  },
+  computed: {
+    isMobile () {
+      return window.innerWidth < 992
     }
   },
   mounted () {
@@ -198,7 +203,18 @@ export default {
 }
 
 .product img {
-  height: 20vh !important;
+  height: 15vh !important;
+}
+
+@media screen and (max-width: 992px) {
+  .product img {
+    height: 20vh !important;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .product img {
+    height: 23vh !important;
+  }
 }
 
 .appear {
