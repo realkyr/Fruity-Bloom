@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import lottie from 'lottie-web'
+import { loadAnimation, pauseWhileHidden } from '@/utils/motion'
 import '@/assets/css/story.css'
 
 export default {
@@ -77,15 +77,23 @@ export default {
     }
   },
   async mounted () {
-    const vh = window.innerHeight * 0.01
-    document.documentElement.style.setProperty('--vh', `${vh}px`)
-    // for (const monthEl of this.monthList) {
-    //   this.setAnimation(monthEl)
-    // }
+    this.updateViewportUnit()
+    window.addEventListener('resize', this.updateViewportUnit)
+    this.stopVisibilityWatch = pauseWhileHidden(() => Object.values(this.anim))
     this.setAnimation('jan')
     this.anim.jan.play()
     await this.wait(5500)
     this.clickable = true
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.updateViewportUnit)
+    if (this.stopVisibilityWatch) this.stopVisibilityWatch()
+    // Every animation left alive holds on to its SVG tree and a parsed copy
+    // of a JSON file that can run to several megabytes.
+    for (const key of Object.keys(this.anim)) {
+      this.anim[key].destroy()
+    }
+    this.anim = {}
   },
   methods: {
     async next () {
@@ -132,37 +140,25 @@ export default {
       // }
       if (id !== 'final') this.anim[id].play()
       await this.wait(1200)
-      this.anim[idstop].destroy()
+      if (this.anim[idstop]) {
+        this.anim[idstop].destroy()
+        delete this.anim[idstop]
+      }
       this.clickable = true
     },
     setAnimation (month) {
-      lottie.setQuality('low')
-      const data = require(`@/assets/Animation/Story/${month}.json`)
-      console.log(month)
-      this.anim[month] = lottie.loadAnimation({
+      if (this.anim[month]) return
+      // file-loader turns this into a URL, so Lottie streams the JSON when the
+      // month is reached instead of it sitting in the main bundle.
+      const path = require(`@/assets/Animation/Story/${month}.json`)
+      this.anim[month] = loadAnimation({
         container: this.$refs[month],
-        renderer: 'svg',
-        loop: true,
-        autoplay: false,
-        animationData: data
+        path
       })
-      // data = require(`@/assets/Animation/Story/${month}_2.json`)
-      // this.anim[month + '2'] = lottie.loadAnimation({
-      //   container: this.$refs[month + '2'],
-      //   renderer: 'svg',
-      //   loop: true,
-      //   autoplay: true,
-      //   animationData: data
-      // })
-      this.anim[month].addEventListener('DOMLoaded', () => {
-        // this.loaded += 1
-        console.log('complete')
-        // if (month !== 'jan') this.anim[month].stop()
-      })
-      // this.anim[month + '2'].addEventListener('DOMLoaded', () => {
-      //   this.loaded += 1; console.log('complete')
-      //   this.anim[month + '2'].stop()
-      // })
+    },
+    updateViewportUnit () {
+      const vh = window.innerHeight * 0.01
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
     },
     async wait (ms) {
       return new Promise(resolve => {

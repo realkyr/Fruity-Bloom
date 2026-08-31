@@ -21,7 +21,7 @@
     <img class="hs-arrow next" :src="require(`@/assets/img/Story/arrow-up-w.png`)">
     <img class="hs-arrow prev" :src="require(`@/assets/img/Story/arrow-up-w.png`)">
 
-    <div ref="mouse" class="mouse" style="left: 0; right: 0;">
+    <div ref="mouse" class="mouse">
       <div :class="['mouse-inner', monthList[month]]"></div>
     </div>
 
@@ -71,7 +71,9 @@ export default {
         '#517638', '#F7D492', '#F1E8C4', '#F9DCE7'
       ],
       clickable: true,
-      steate: 'next'
+      steate: 'next',
+      pointer: { x: 0, y: 0 },
+      pointerFrame: null
     }
   },
   methods: {
@@ -125,12 +127,25 @@ export default {
       })
     },
     updateCoord (e) {
-      this.$refs.mouse.style.left = e.clientX + 'px'
-      this.$refs.mouse.style.top = e.clientY + 'px'
+      // mousemove fires far more often than the screen refreshes. Buffer the
+      // position and write it once per frame, as a transform so the browser
+      // can move the cursor on the compositor instead of relaying out the page.
+      this.pointer.x = e.clientX
+      this.pointer.y = e.clientY
+      if (this.pointerFrame !== null) return
+      this.pointerFrame = window.requestAnimationFrame(() => {
+        this.pointerFrame = null
+        if (!this.$refs.mouse) return
+        this.$refs.mouse.style.transform =
+          `translate3d(${this.pointer.x}px, ${this.pointer.y}px, 0) translate(-40%, -30%)`
+      })
     }
   },
   mounted () {
     document.documentElement.style.setProperty('--story-color', `${this.textColor[this.month]}`)
+  },
+  beforeDestroy () {
+    if (this.pointerFrame !== null) window.cancelAnimationFrame(this.pointerFrame)
   }
 }
 </script>
@@ -145,7 +160,10 @@ export default {
   border: 1px white solid;
   border-radius: 50%;
   position: absolute;
+  top: 0;
+  left: 0;
   transform: translate(-40%, -30%);
+  will-change: transform;
   z-index: 110;
   pointer-events: none;
 }

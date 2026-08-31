@@ -4,7 +4,7 @@
     <img class="cloud" id="c-6" :src="require('@/assets/cloud.png')" >
     <img class="cloud" id="c-4" :src="require('@/assets/cloud.png')" >
     <img class="cloud" id="c-5" :src="require('@/assets/cloud.png')" >
-    <div id="landing" class="landing"></div>
+    <div id="landing" ref="landing" class="landing"></div>
     <img class="cloud-footer" :src="require('@/assets/img/Home/cloudfoot-01.png')" alt="cloud footer">
     <NextButton @click.native="nextSection()" class="next-button" />
   </div>
@@ -13,6 +13,7 @@
 <script>
 import NextButton from '@/components/icons/NextButton.vue'
 import animation from '@/assets/Animation/LandingPage/data.json'
+import { loadAnimation, pauseWhileHidden } from '@/utils/motion'
 
 export default {
   components: {
@@ -27,14 +28,17 @@ export default {
     }
   },
   mounted () {
-    // eslint-disable-next-line no-undef
-    bodymovin.loadAnimation({
-      container: document.getElementById('landing'),
-      rederer: 'svg',
+    this.anim = loadAnimation({
+      container: this.$refs.landing,
+      animationData: animation,
       loop: false,
-      autoplay: true,
-      animationData: animation
+      autoplay: true
     })
+    this.stopVisibilityWatch = pauseWhileHidden(() => [this.anim])
+  },
+  beforeDestroy () {
+    if (this.stopVisibilityWatch) this.stopVisibilityWatch()
+    if (this.anim) this.anim.destroy()
   },
   methods: {
     nextSection () {
@@ -114,6 +118,12 @@ export default {
 #c-6 {
   left: 85%;
   top: 75%
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud {
+    animation: none;
+  }
 }
 
 @keyframes cloudMove {

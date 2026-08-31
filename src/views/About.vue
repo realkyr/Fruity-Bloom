@@ -91,11 +91,15 @@ export default {
   mounted () {
     this.$store.state.start = true
     this.$store.state.isLoadFinish = true
-    window.addEventListener('scroll', this.checkVisibility)
+    // Passive: the handler never calls preventDefault, so telling the browser
+    // up front keeps scrolling off the main thread's critical path.
+    window.addEventListener('scroll', this.onScroll, { passive: true })
+    this.checkVisibility()
   },
   data () {
     return {
       position: window.scrollY,
+      scrollFrame: null,
       visibility: {
         propose: true,
         learnto: null,
@@ -103,11 +107,22 @@ export default {
       }
     }
   },
-  destroyed () {
-    window.removeEventListener('scroll', this.checkVisibility)
+  beforeDestroy () {
+    window.removeEventListener('scroll', this.onScroll)
+    if (this.scrollFrame !== null) window.cancelAnimationFrame(this.scrollFrame)
   },
   methods: {
+    onScroll () {
+      // checkVisibility reads offsetTop, which forces layout. Doing that once
+      // per frame instead of once per scroll event keeps the page smooth.
+      if (this.scrollFrame !== null) return
+      this.scrollFrame = window.requestAnimationFrame(() => {
+        this.scrollFrame = null
+        this.checkVisibility()
+      })
+    },
     checkVisibility () {
+      if (!this.$refs.learnto || !this.$refs.fruit) return
       let step = 400
       if (window.innerHeight >= 1000) step = 1000
       this.position = window.scrollY + step

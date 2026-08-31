@@ -2,10 +2,13 @@
   "name": "projectp",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=12"
+  },
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "serve": "node scripts/vue-cli-service.js serve",
+    "build": "node scripts/vue-cli-service.js build",
+    "lint": "node scripts/vue-cli-service.js lint"
   },
   "dependencies": {
     "bootstrap": "^4.4.1",

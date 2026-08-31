@@ -94,6 +94,7 @@ export default {
     handleResize () {
       this.screen.width = window.innerWidth
       this.screen.height = window.innerHeight
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`)
     },
     changeStrawberry (status) {
       if (status === 'in') this.$refs.strawberry.src = require('@/assets/strawberry-cut.png')
@@ -110,17 +111,11 @@ export default {
     }
   },
   mounted () {
-    const vh = window.innerHeight * 0.01
-    document.documentElement.style.setProperty('--vh', `${vh}px`)
-    window.addEventListener('resize', () => {
-      // We execute the same script as before
-      const vh = window.innerHeight * 0.01
-      document.documentElement.style.setProperty('--vh', `${vh}px`)
-    })
-    window.addEventListener('resize', () => { this.handleResize() })
+    this.handleResize()
+    window.addEventListener('resize', this.handleResize)
   },
-  destroyed () {
-    window.addEventListener('resize', () => { this.handleResize() })
+  beforeDestroy () {
+    window.removeEventListener('resize', this.handleResize)
   }
 }
 </script>
